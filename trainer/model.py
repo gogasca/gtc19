@@ -26,7 +26,7 @@ import tensorflow_hub as hub
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    '--model-dir',
+    '--job-dir',
     type=str,
     help='GCS location to write checkpoints and export models')
 parser.add_argument(
@@ -132,7 +132,7 @@ def train_and_evaluate(args):
         config=tf.estimator.RunConfig(
           save_summary_steps=1000,
           save_checkpoints_steps=1000,
-          model_dir=args.model_dir
+          model_dir=args.job_dir
         ),
         max_iteration_steps=5000)
 
@@ -147,7 +147,7 @@ def train_and_evaluate(args):
 
 def input_fn_eval():
   dataset = tf.data.Dataset.from_tensor_slices((eval_features, eval_labels))
-  dataset = dataset.batch(batch_size)
+  dataset = dataset.batch(args.batch_size)
   iterator = dataset.make_one_shot_iterator()
   data, labels = iterator.get_next()
   return data, labels
@@ -180,7 +180,7 @@ def serving_input_fn():
     return tf.estimator.export.ServingInputReceiver(feature_placeholders, feature_placeholders)
 
 
-latest_ckpt = tf.train.latest_checkpoint(model_dir)
+latest_ckpt = tf.train.latest_checkpoint(args.job_dir)
 last_eval = estimator.evaluate(
   input_fn_eval,
   checkpoint_path=latest_ckpt
@@ -188,4 +188,4 @@ last_eval = estimator.evaluate(
 
 # Export the model to GCS for serving
 exporter = tf.estimator.LatestExporter('exporter', serving_input_fn, exports_to_keep=None)
-exporter.export(estimator, model_dir, latest_ckpt, last_eval, is_the_final_export=True)
+exporter.export(estimator, args.job_dir, latest_ckpt, last_eval, is_the_final_export=True)
