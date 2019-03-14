@@ -16,6 +16,8 @@ from __future__ import print_function
 import argparse
 import urllib
 
+import json
+import os
 import adanet
 import numpy as np
 import pandas as pd
@@ -88,6 +90,26 @@ def load_data():
     return train_text, train_labels, test_text, eval_labels, encoder
 
 
+def _get_session_config_from_env_var():
+    """Returns a tf.ConfigProto instance that has appropriate device_filters
+    set."""
+
+    tf_config = json.loads(os.environ.get('TF_CONFIG', '{}'))
+
+    if (tf_config and 'task' in tf_config and 'type' in tf_config['task'] and
+            'index' in tf_config['task']):
+        # Master should only communicate with itself and ps
+        if tf_config['task']['type'] == 'master':
+            return tf.ConfigProto(device_filters=['/job:ps', '/job:master'])
+        # Worker should only communicate with itself and ps
+        elif tf_config['task']['type'] == 'worker':
+            return tf.ConfigProto(device_filters=[
+                '/job:ps',
+                '/job:worker/task:%d' % tf_config['task']['index']
+            ])
+    return None
+
+
 def train_and_evaluate(args):
     """
 
@@ -136,7 +158,8 @@ def train_and_evaluate(args):
         config=tf.estimator.RunConfig(
             save_summary_steps=1000,
             save_checkpoints_steps=1000,
-            model_dir=args.job_dir
+            model_dir=args.job_dir,
+            session_config=_get_session_config_from_env_var()
         ),
         max_iteration_steps=5000)
 
