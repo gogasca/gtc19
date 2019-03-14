@@ -13,6 +13,6 @@ trainingInput:
   scaleTier: CUSTOM
   masterType: large_model_v100
   workerType: large_model_v100
-  parameterServerType: large_model
+  parameterServerType: large_model  
+  parameterServerCount: 1
   workerCount: 1
-  parameterServerCount: 3
