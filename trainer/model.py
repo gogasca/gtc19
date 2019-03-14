@@ -105,45 +105,42 @@ train_features = {
 
 train_labels = np.array(train_encoded).astype(np.int32)
 
+# Define the Estimators we'll be feeding into our AdaNet model
+estimator_ndim = tf.contrib.estimator.DNNEstimator(
+  head=multi_class_head,
+  hidden_units=[64,10],
+  feature_columns=[ndim_embeddings]
+)
 
-def train_and_evaluate(args):
-
-    # Define the Estimators we'll be feeding into our AdaNet model
-    estimator_ndim = tf.contrib.estimator.DNNEstimator(
-      head=multi_class_head,
-      hidden_units=[64,10],
-      feature_columns=[ndim_embeddings]
-    )
-
-    estimator_encoder = tf.contrib.estimator.DNNEstimator(
-      head=multi_class_head,
-      hidden_units=[64,10],
-      feature_columns=[encoder_embeddings]
-    )
+estimator_encoder = tf.contrib.estimator.DNNEstimator(
+  head=multi_class_head,
+  hidden_units=[64,10],
+  feature_columns=[encoder_embeddings]
+)
 
 
-    # Create our AutoEnsembleEstimator from the 2 estimators above
-    estimator = adanet.AutoEnsembleEstimator(
-        head=multi_class_head,
-        candidate_pool=[
-            estimator_encoder,
-            estimator_ndim
-        ],
-        config=tf.estimator.RunConfig(
-          save_summary_steps=1000,
-          save_checkpoints_steps=1000,
-          model_dir=args.job_dir
-        ),
-        max_iteration_steps=5000)
+# Create our AutoEnsembleEstimator from the 2 estimators above
+estimator = adanet.AutoEnsembleEstimator(
+    head=multi_class_head,
+    candidate_pool=[
+        estimator_encoder,
+        estimator_ndim
+    ],
+    config=tf.estimator.RunConfig(
+      save_summary_steps=1000,
+      save_checkpoints_steps=1000,
+      model_dir=args.job_dir
+    ),
+    max_iteration_steps=5000)
 
 
-    # Set up features dict and input function for eval
-    eval_features = {
-      "ndim": test_text,
-      "encoder": test_text
-    }
+# Set up features dict and input function for eval
+eval_features = {
+  "ndim": test_text,
+  "encoder": test_text
+}
 
-    eval_labels = np.array(test_encoded).astype(np.int32)
+eval_labels = np.array(test_encoded).astype(np.int32)    
 
 def input_fn_eval():
   dataset = tf.data.Dataset.from_tensor_slices((eval_features, eval_labels))
