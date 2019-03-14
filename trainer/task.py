@@ -97,16 +97,19 @@ def _get_session_config_from_env_var():
     tf_config = json.loads(os.environ.get('TF_CONFIG', '{}'))
 
     if (tf_config and 'task' in tf_config and 'type' in tf_config['task'] and
-            'index' in tf_config['task']):
+        'index' in tf_config['task']):
         # Master should only communicate with itself and ps
         if tf_config['task']['type'] == 'master':
-            return tf.ConfigProto(device_filters=['/job:ps', '/job:master'])
+            return tf.ConfigProto(log_device_placement=True,
+                                  device_filters=['/job:ps', '/job:master'])
         # Worker should only communicate with itself and ps
         elif tf_config['task']['type'] == 'worker':
-            return tf.ConfigProto(device_filters=[
-                '/job:ps',
-                '/job:worker/task:%d' % tf_config['task']['index']
-            ])
+            return tf.ConfigProto(log_device_placement=True,
+                                  device_filters=[
+                                      '/job:ps',
+                                      '/job:worker/task:%d' % tf_config['task'][
+                                          'index']
+                                  ])
     return None
 
 
