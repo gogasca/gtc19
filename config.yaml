@@ -9,9 +9,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-scaleTier: CUSTOM
-  masterType: large_model_v100
-  workerType: large_model_v100
-  parameterServerType: large_model
-  parameterServerCount: 1
-  workerCount: 2
+trainingInput:
+  scaleTier: BASIC_GPU
