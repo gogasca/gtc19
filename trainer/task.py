@@ -121,7 +121,10 @@ def train_and_evaluate(args):
     """
     
     train_text, train_labels, test_text, eval_labels, encoder = load_data()
-
+    
+    from tensorflow.python.client import device_lib
+    print(device_lib.list_local_devices())
+    
     # Create TF Hub embedding columns using 2 different modules
     ndim_embeddings = hub.text_embedding_column(
         "ndim",
