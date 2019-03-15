@@ -10,4 +10,5 @@
 # limitations under the License.
 
 trainingInput:
-  scaleTier: BASIC_GPU
+  scaleTier: CUSTOM
+  masterType: standard_v100
