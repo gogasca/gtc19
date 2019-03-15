@@ -119,6 +119,9 @@ def train_and_evaluate(args):
     :param args:
     :return:
     """
+    from tensorflow.python.client import device_lib
+    print(device_lib.list_local_devices())
+    
     train_text, train_labels, test_text, eval_labels, encoder = load_data()
 
     # Create TF Hub embedding columns using 2 different modules
