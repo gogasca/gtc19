@@ -10,9 +10,4 @@
 # limitations under the License.
 
 trainingInput:
-  scaleTier: CUSTOM
-  masterType: large_model_v100
-  workerType: large_model_v100
-  parameterServerType: large_model  
-  parameterServerCount: 1
-  workerCount: 1
+  scaleTier: BASIC_GPU
