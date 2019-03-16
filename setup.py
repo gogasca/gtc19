@@ -12,7 +12,7 @@
 from setuptools import find_packages
 from setuptools import setup
 
-REQUIRED_PACKAGES = ['tensorflow-gpu==1.12.0', 
+REQUIRED_PACKAGES = ['tensorflow-gpu==1.13.1', 
                      'numpy', 
                      'sklearn', 
                      'pandas', 
