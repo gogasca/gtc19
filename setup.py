@@ -12,7 +12,7 @@
 from setuptools import find_packages
 from setuptools import setup
 
-REQUIRED_PACKAGES = ['tensorflow>=1.12', 
+REQUIRED_PACKAGES = ['tensorflow-gpu==1.13.1', 
                      'numpy', 
                      'sklearn', 
                      'pandas', 
@@ -25,5 +25,5 @@ setup(
     install_requires=REQUIRED_PACKAGES,
     packages=find_packages(),
     include_package_data=True,
-    description='author prediction model'
+    description='Adanet prediction model'
 )
