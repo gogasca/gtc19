@@ -133,7 +133,7 @@ def train_and_evaluate(args):
     )
     encoder_embeddings = hub.text_embedding_column(
         "encoder",
-        module_spec="https://tfhub.dev/google/universal-sentence-encoder/2",
+        module_spec="https://tfhub.dev/google/universal-sentence-encoder-large/3",
         trainable=False)
 
     # Create a head and features dict for training
