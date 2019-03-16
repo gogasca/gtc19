@@ -143,13 +143,13 @@ def train_and_evaluate(args):
     )
 
     # Define the Estimators we'll be feeding into our AdaNet model
-    estimator_ndim = tf.estimator.DNNEstimator(
+    estimator_ndim = tf.contrib.estimator.DNNEstimator(
         head=multi_class_head,
         hidden_units=[64, 10],
         feature_columns=[ndim_embeddings]
     )
 
-    estimator_encoder = tf.estimator.DNNEstimator(
+    estimator_encoder = tf.contrib.estimator.DNNEstimator(
         head=multi_class_head,
         hidden_units=[64, 10],
         feature_columns=[encoder_embeddings]
@@ -165,8 +165,7 @@ def train_and_evaluate(args):
         config=tf.estimator.RunConfig(
             save_summary_steps=1000,
             save_checkpoints_steps=1000,
-            model_dir=args.job_dir,
-            session_config=_get_session_config_from_env_var()
+            model_dir=args.job_dir
         ),
         max_iteration_steps=5000)
 
